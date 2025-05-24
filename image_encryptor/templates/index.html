@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Encryption Tool</title>
+</head>
+<body style="text-align: center; padding: 20px;">
+  <h2>Upload Image to Encrypt</h2>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" required />
+    <br /><br />
+    <button type="submit">Encrypt</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('uploadForm').onsubmit = async function (e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+
+      const response = await fetch('/encrypt', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        alert('Failed to encrypt image.');
+        return;
+      }
+
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      document.getElementById('result').innerHTML = `
+        <h3>Encrypted Image:</h3>
+        <img src="${imageUrl}" width="300" />
+      `;
+    };
+  </script>
+</body>
+</html>
